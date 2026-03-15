@@ -10,7 +10,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 ---
 Response: 
-I started the game with the number 5. 
+When I started playing the game, I used the number 5. As I was playing the game, it started giving me wrong output.
 Bug 1: The game gave me wrong hint. It kept saying to go lower, even though the secret number was 58 and that's higher than 5.
 Bug 2: I got a message saying I ran out of attempts, even though the game said I have 1-2 more attmepts.
 Bug 3: When I click the "New game" button, the game doesnt reset.
