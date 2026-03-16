@@ -97,7 +97,6 @@ if submit:
 
         outcome, message = check_guess(guess_int, secret)
         
-        # FIX ME: Possible cause of the hints displaying wrong:
         if show_hint:
             st.warning(message)
 
