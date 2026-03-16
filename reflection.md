@@ -9,7 +9,6 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
   (for example: "the secret number kept changing" or "the hints were backwards").
 
 ---
-Response: 
 When I started playing the game, I used the number 5. As I was playing the game, it started giving me wrong output.
 Bug 1: The game gave me wrong hints. It kept saying to go lower, even though the secret number was 58 and that's higher than 5.
 Bug 2: I got a message saying I ran out of attempts, even though the game said I have 1-2 more attempts.
@@ -44,6 +43,7 @@ I decided a bug was really fixed by either I playing the game again or using pyt
 - What change did you make that finally gave the game a stable secret number?
 
 ---
+Streamlit reruns are when the entire Python file re-executes its code whenever a user interacts with a UI in the browser or when the source code changes.
 
 ## 5. Looking ahead: your developer habits
 
@@ -51,3 +51,6 @@ I decided a bug was really fixed by either I playing the game again or using pyt
   - This could be a testing habit, a prompting strategy, or a way you used Git.
 - What is one thing you would do differently next time you work with AI on a coding task?
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+
+One strategy I would reuse from this project is I would use AI help me debug code when I take too long to fix it myself.
+The next time I work with AI is I would ask it to explain the functions it uses, the ones I'm not familiar with.

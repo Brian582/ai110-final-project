@@ -29,9 +29,17 @@ It wrote the code, ran away, and now the game is unplayable.
 - [ ] Detail which bugs you found.
 - [ ] Explain what fixes you applied.
 
+The point of the game is to guess the correct number in the limited number of attempts you are given. If you guess correctly you win, if you run out of attempts you lose. The bugs I found in the game were that it gave me wrong hints, it displayed the "Out of attempts" message too early, and the game didnt reset when you clicked the "New game" button. I used Claude to fix the bugs. 
+"New game" button bug fix: To fix this bug, Claude added " st.session_state.status = "playing" ", so the game could properly reset when the "New game" button was clicked.
+"Out of attempts" message bug fix: To fix this bug, Claude changed "attempts" initialization from 1 to 0 and put the "st.info" code near the bottom of the app.py file, so it displays the attempt count correctly.
+Hint bug fix: To fix this bug, Claude swapped the hints messages and removed the code where "Secret" became a string on even attempts.
+
+
+
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+- ![Alt text](screenshot\Screenshot.png)
+
 
 ## 🚀 Stretch Features
 
