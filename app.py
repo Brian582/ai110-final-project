@@ -54,7 +54,9 @@ st.sidebar.divider()
 st.sidebar.subheader("AI Variant Generator")
 remaining = _MAX_GENERATIONS - st.session_state.variant_calls
 st.sidebar.caption(f"Generations remaining: {remaining}/{_MAX_GENERATIONS}")
-theme_input = st.sidebar.text_input("Theme", placeholder="e.g. haunted house, outer space")
+theme_input = st.sidebar.text_input("Theme", placeholder="e.g. haunted house, outer space, pirates"
+)
+st.sidebar.caption("The AI will generate a number-guessing game flavored around your theme.")
 generate_btn = st.sidebar.button("Generate Variant", disabled=remaining <= 0)
 
 if generate_btn:
