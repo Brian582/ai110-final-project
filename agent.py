@@ -24,4 +24,4 @@ def generate_variant(theme: str) -> str:
         model="gemini-2.0-flash",
         contents=prompt,
     )
-    return response.text
+    return response.text or ""
