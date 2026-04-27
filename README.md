@@ -46,7 +46,7 @@ Hint bug fix: To fix this bug, Claude swapped the hints messages and removed the
 - [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
 
 
-# Documentation: How You Explain Your Work
+## Part 3. Documentation: How You Explain Your Work
 
 1. This project was originally the "Game Glitch Investigator" project. The project was originally used for practice for how to debug code with AI.
 
@@ -102,3 +102,17 @@ The system has four main layers:
    ```
 
 6. **Use the AI Variant Generator** — in the sidebar, type a theme (e.g. `pirates`, `outer space`) and click **Generate Variant**. The agent will generate, validate, and render a themed game. Click **Clear Variant** to return to the default game.
+
+
+## Part 4. Reliability and Evaluation: How You Test and Improve Your AI
+
+## Automated Tests
+
+11/11 passed. Here is what Claude tested and what each group covered:
+
+_extract_code (2 tests) — confirms the regex correctly pulls the fenced block, and returns None when there's no block at all.
+
+_validate (5 tests) — one test per contract rule: valid code passes, syntax errors are caught, missing run_variant is caught, a run_variant() call at module level is caught, and st.set_page_config is caught.
+
+run_agent (4 tests) — all mocked with patch("agent._call_gemini") so no real API calls are made: success on first try, retry after missing code block, retry after failed validation, and None returned when all retries are exhausted.
+
