@@ -1,8 +1,21 @@
+import builtins as _builtins
 import random
 from typing import Any
 import streamlit as st
 from logic_utils import check_guess, update_score, parse_guess, get_range_for_difficulty
 from agent import run_agent
+
+_MAX_GENERATIONS = 5
+
+_SAFE_BUILTINS: dict[str, Any] = {
+    name: getattr(_builtins, name)
+    for name in (
+        "abs", "bool", "dict", "enumerate", "float", "int",
+        "isinstance", "len", "list", "max", "min", "print",
+        "range", "round", "set", "sorted", "str", "tuple", "type", "zip",
+        "Exception", "ValueError", "KeyError",
+    )
+}
 
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
@@ -31,18 +44,29 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
+if "variant_code" not in st.session_state:
+    st.session_state.variant_code = None
+
+if "variant_calls" not in st.session_state:
+    st.session_state.variant_calls = 0
+
 st.sidebar.divider()
 st.sidebar.subheader("AI Variant Generator")
+remaining = _MAX_GENERATIONS - st.session_state.variant_calls
+st.sidebar.caption(f"Generations remaining: {remaining}/{_MAX_GENERATIONS}")
 theme_input = st.sidebar.text_input("Theme", placeholder="e.g. haunted house, outer space")
-generate_btn = st.sidebar.button("Generate Variant")
+generate_btn = st.sidebar.button("Generate Variant", disabled=remaining <= 0)
 
 if generate_btn:
     if not theme_input:
         st.sidebar.warning("Enter a theme first.")
+    elif remaining <= 0:
+        st.sidebar.error("Generation limit reached for this session.")
     else:
         with st.sidebar:
             with st.spinner("Generating..."):
                 code = run_agent(theme_input)
+        st.session_state.variant_calls += 1
         if code:
             st.session_state.variant_code = code
             st.rerun()
@@ -69,11 +93,8 @@ if "status" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
-if "variant_code" not in st.session_state:
-    st.session_state.variant_code = None
-
 if st.session_state.variant_code:
-    namespace: dict[str, Any] = {"st": st, "random": random}
+    namespace: dict[str, Any] = {"st": st, "random": random, "__builtins__": _SAFE_BUILTINS}
     exec(st.session_state.variant_code, namespace)  # noqa: S102
     namespace["run_variant"]()
     st.stop()
