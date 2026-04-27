@@ -1,6 +1,7 @@
 import random
 import streamlit as st
 from logic_utils import check_guess, update_score, parse_guess, get_range_for_difficulty
+from agent import generate_variant
 
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
