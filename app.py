@@ -1,4 +1,5 @@
 import random
+from typing import Any
 import streamlit as st
 from logic_utils import check_guess, update_score, parse_guess, get_range_for_difficulty
 from agent import run_agent
@@ -72,7 +73,7 @@ if "variant_code" not in st.session_state:
     st.session_state.variant_code = None
 
 if st.session_state.variant_code:
-    namespace = {"st": st, "random": random}
+    namespace: dict[str, Any] = {"st": st, "random": random}
     exec(st.session_state.variant_code, namespace)  # noqa: S102
     namespace["run_variant"]()
     st.stop()
