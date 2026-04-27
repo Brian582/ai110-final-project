@@ -103,6 +103,46 @@ The system has four main layers:
 
 6. **Use the AI Variant Generator** — in the sidebar, type a theme (e.g. `pirates`, `outer space`) and click **Generate Variant**. The agent will generate, validate, and render a themed game. Click **Clear Variant** to return to the default game.
 
+---
+
+## Sample Interactions
+
+**Example 1 — Theme: `haunted house`**
+> Input: User types "haunted house" and clicks Generate Variant.
+> Output: Gemini generates a game titled something like "Whispers from the beyond speak of a number between 1 and 13. You have 5 attempts to reveal its secret before the spirits claim you! What number haunts this house?"
+
+**Example 2 — Theme: `outer space`**
+> Input: User types "outer space" and clicks Generate Variant.
+> Output: Gemini generates a game like " I'm thinking of a number between 1 and 100.,  Warp Jumps remaining: 7, Enter your guess for the Cosmic Code!" HINT: 1 Too low! Your trajectory needs adjusting."
+
+---
+
+## Design Decisions
+
+**Why `exec` instead of saving the file and importing it?**
+Using `exec` with a restricted namespace keeps the generated code sandboxed and temporary. Writing it to a `.py` file and importing it would leave files on disk, require managing module cache (`importlib.reload`), and give the code full import access. The trade-off is that `exec` is harder to debug, but for a short-lived game variant it is the right call.
+
+**Why AST validation instead of just running the code and catching errors?**
+Running untrusted code to see if it crashes is itself a security risk — the code could do damage before it errors. Validating with `ast.parse` and `ast.walk` checks the structure without executing anything, so violations are caught safely before the sandbox ever opens.
+
+**Why does Agentic Workflow have 3 retries and the app only has 5 generations?**
+3 retries balances giving Gemini enough chances to self-correct without burning too many free-tier API calls per generation attempt. 5 generations per session is a conservative cap — worst case that is 15 API calls in one session, well within free-tier daily limits. Both numbers are constants that are easy to change.
+
+**Trade-off: no persistent rate limiting.**
+The generation counter lives in `st.session_state`, so it resets on page refresh. A real production system would track usage server-side or with a database. For a demo project this is acceptable — the cap exists to prevent accidental runaway usage, not to enforce strict quotas.
+
+---
+
+## Testing Summary
+
+**What worked:**
+All 11 tests pass. Mocking `_call_gemini` with `unittest.mock.patch` made it possible to test every path through the agent loop — success, retry, and fallback — without making a single real API call. The AST-based validator tests were straightforward because `_validate` is a pure function with no side effects.
+
+**What didn't work initially:**
+The `exec` sandbox broke at runtime because Gemini's generated code included `import streamlit as st` and `import random` even after being told not to. Python uses `__import__` internally to handle those statements, and `__import__` was blocked by `_SAFE_BUILTINS`. This was fixed by stripping import lines before `exec` as a safety net, and updating the system prompt to explicitly tell Gemini not to use import statements.
+
+
+---
 
 ## Part 4. Reliability and Evaluation: How You Test and Improve Your AI
 
