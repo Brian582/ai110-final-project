@@ -1,5 +1,6 @@
 import builtins as _builtins
 import random
+import re
 from typing import Any
 import streamlit as st
 from logic_utils import check_guess, update_score, parse_guess, get_range_for_difficulty
@@ -96,8 +97,12 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 if st.session_state.variant_code:
+    _clean = "\n".join(
+        line for line in st.session_state.variant_code.splitlines()
+        if not re.match(r"^\s*(import|from)\s+", line)
+    )
     namespace: dict[str, Any] = {"st": st, "random": random, "__builtins__": _SAFE_BUILTINS}
-    exec(st.session_state.variant_code, namespace)  # noqa: S102
+    exec(_clean, namespace)  # noqa: S102
     namespace["run_variant"]()
     st.stop()
 

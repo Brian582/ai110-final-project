@@ -22,7 +22,8 @@ The code block must follow this exact contract so it can be validated and execut
 6. The game must display a loss message when attempts are exhausted.
 7. Do NOT call run_variant() inside the code block — the caller does that.
 8. Do NOT call st.set_page_config() — it is already set by the caller.
-9. Keep the code under 60 lines."""
+9. Do NOT use any import statements — st and random are already available as globals.
+10. Keep the code under 60 lines."""
 
 _USER_PROMPT_TEMPLATE = "Theme: {theme}"
 
