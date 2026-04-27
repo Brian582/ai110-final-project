@@ -156,3 +156,13 @@ _validate (5 tests) — one test per contract rule: valid code passes, syntax er
 
 run_agent (4 tests) — all mocked with patch("agent._call_gemini") so no real API calls are made: success on first try, retry after missing code block, retry after failed validation, and None returned when all retries are exhausted.
 
+## Part 5. Reflection and Ethics: Thinking Critically About Your AI
+
+## What are the limitations or biases in your system?
+
+The validator only checks code structure — it cannot tell if the generated game is actually fun or fair. A game could pass all checks but still have a secret range of 1 to 1000 with only 3 attempts, making it nearly unwinnable. Theme quality is also inconsistent: simple themes like "pirates" produce better results than abstract ones like "quantum physics" because Gemini has more training data on popular topics, which creates a bias toward well-known themes.
+
+## Could your AI be misused, and how would you prevent that?
+
+A user could try to inject instructions into the theme input to override the system prompt. This is mitigated because the system instruction is passed as a separate field in the API call, not mixed into the user prompt, making it harder to override. Any code that reaches `exec` also runs in a restricted namespace where dangerous modules like `os` and `sys` are unavailable. For content safety, the Gemini API has built-in filters that block harmful outputs — a blocked response is treated as a failed generation and the app falls back to the default game.
+
