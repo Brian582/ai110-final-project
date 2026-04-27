@@ -1,7 +1,7 @@
 import random
 import streamlit as st
 from logic_utils import check_guess, update_score, parse_guess, get_range_for_difficulty
-from agent import generate_variant
+from agent import run_agent
 
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
@@ -30,6 +30,29 @@ low, high = get_range_for_difficulty(difficulty)
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
+st.sidebar.divider()
+st.sidebar.subheader("AI Variant Generator")
+theme_input = st.sidebar.text_input("Theme", placeholder="e.g. haunted house, outer space")
+generate_btn = st.sidebar.button("Generate Variant")
+
+if generate_btn:
+    if not theme_input:
+        st.sidebar.warning("Enter a theme first.")
+    else:
+        with st.sidebar:
+            with st.spinner("Generating..."):
+                code = run_agent(theme_input)
+        if code:
+            st.session_state.variant_code = code
+            st.rerun()
+        else:
+            st.sidebar.error("Could not generate a valid variant after 3 attempts. Playing default game.")
+
+if st.session_state.variant_code:
+    if st.sidebar.button("Clear Variant"):
+        st.session_state.variant_code = None
+        st.rerun()
+
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
@@ -44,6 +67,15 @@ if "status" not in st.session_state:
 
 if "history" not in st.session_state:
     st.session_state.history = []
+
+if "variant_code" not in st.session_state:
+    st.session_state.variant_code = None
+
+if st.session_state.variant_code:
+    namespace = {"st": st, "random": random}
+    exec(st.session_state.variant_code, namespace)  # noqa: S102
+    namespace["run_variant"]()
+    st.stop()
 
 st.subheader("Make a guess")
 
