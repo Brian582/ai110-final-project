@@ -46,7 +46,7 @@ Fix the problem and return the corrected ```python code block only."""
 
 def _call_gemini(contents: str) -> str:
     response = _client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash",
         contents=contents,
         config=_GEMINI_CONFIG,
     )
